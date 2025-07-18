@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yacht Dice Game - Turn</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      text-align: center;
+      background-color: #f8f1e4;
+      font-size: 22px;
+      padding-top: 40px;
+    }
+
+    h2 {
+      font-size: 60px;
+      color: #5b432d;
+      margin-bottom: 20px;
+      margin-top: 70px;
+    }
+
+    .dice-container {
+      margin-top: 80px;
+    }
+
+    .dice-container button {
+      margin: 0 5px;
+      font-size: 36px;
+      padding: 5px 10px;
+      border: 2px solid #333;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .roll-btn {
+      font-size: 24px;
+      padding: 10px 20px;
+      margin-top: 40px;
+      background-color: #5b90f4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .roll-btn:hover {
+      background-color: #4278d1;
+    }
+
+    .content-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 100px; /* 전략 선택과 스코어보드 사이 간격 늘림 */
+      margin-top: 40px;
+    }
+
+    .strategy-section h3 {
+      font-size: 40px;  /* 한 줄에 적당한 크기 */
+      margin-bottom: 50px;
+      justify-content: flex-start; /* ✅ 위 정렬 고정 */
+      color: #5b432d;
+    }
+
+    .strategy-buttons {
+      display: flex;
+      flex-direction: column;  /* ✅ 세로 정렬 유지 */
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 40px;
+    }
+
+    .strategy-buttons button {
+      font-size: 24px;
+      border: 2px solid #6b4c2f;
+      background-color: #fff8e7;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .strategy-buttons button:hover {
+      background-color: #f0dec2;
+    }
+
+    .scoreboard h3 {
+      font-size: 40px;
+      margin-bottom: 50px;
+      color: #5b432d;
+    }
+
+    .score-table {
+      width: 1050px; /* 약간만 줄임 */
+      font-size: 26px; /* 1.5배 확대 */
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+
+    .score-table th, .score-table td {
+      border: 2px solid #ccc;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .score-table th {
+      background-color: #e6d8bd;
+    }
+    .score-table td:last-child,
+    .score-table th:last-child {
+      min-width: 80px;     /* 기존보다 약간 넓게 */
+    }
+    .score-table td:nth-last-child(2),
+    .score-table th:nth-last-child(2) {
+      min-width: 80px;     /* 두 번째 끝 열도 넓혀줌 */
+    }
+
+
+    form {
+      display: inline;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>{{ player }}'s Turn - Roll {{ roll }}/3</h2>
+
+  <!-- Dice Buttons -->
+  <div class="dice-container">
+    {% for i in range(5) %}
+      <form method="POST">
+        <button type="submit" name="toggle" value="{{ i }}" style="background-color: {{ 'orange' if kept[i] else 'white' }}">
+          🎲 {{ dice[i] }}
+        </button>
+      </form>
+    {% endfor %}
+  </div>
+
+  <!-- Roll Dice -->
+  <form method="POST">
+    <input type="hidden" name="action" value="roll">
+    <button class="roll-btn" type="submit">🎲 Roll Dice</button>
+  </form>
+
+  <!-- Strategy + Scoreboard Side by Side -->
+  <div class="content-wrapper">
+    <!-- Strategy Section -->
+    <div class="strategy-section">
+      <h3>Strategy Selection</h3>
+      <div class="strategy-buttons">
+        {% for s in strategies %}
+          {% if s not in used %}
+            <form method="POST">
+              <button type="submit" name="strategy" value="{{ s }}">{{ s }}</button>
+            </form>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Scoreboard -->
+    <div class="scoreboard">
+      <h3>Score Board</h3>
+      <table class="score-table">
+        <thead>
+          <tr>
+            <th>Strategy</th>
+            <th>How to Score</th>
+            {% for p in players %}
+              <th>{{ p }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% set upper_labels = ['1s', '2s', '3s', '4s', '5s', '6s'] %}
+          {% set lower_labels = ['3 of a kind', '4 of a kind', 'Full House', 'S. Straight', 'L. Straight', 'Yacht'] %}
+          {% set strategies = [
+            ('1s', 'Count and Add Only Ones'),
+            ('2s', 'Count and Add Only Twos'),
+            ('3s', 'Count and Add Only Threes'),
+            ('4s', 'Count and Add Only Fours'),
+            ('5s', 'Count and Add Only Fives'),
+            ('6s', 'Count and Add Only Sixs'),
+            ('Total', '→'),
+            ('Bonus if total score is 63 or more', 'Score 35'),
+            ('Total of Upper Section', '→'),
+            ('3 of a kind', 'Add Total Of All Dice'),
+            ('4 of a kind', 'Add Total Of All Dice'),
+            ('Full House', 'Score 25'),
+            ('S. Straight', 'Score 30'),
+            ('L. Straight', 'Score 40'),
+            ('Yacht', 'Score 50'),
+            ('Choice', 'Sum of All Dice'),
+            ('Total of Lower Section', '→'),
+            ('GRAND TOTAL', '→')
+          ] %}
+
+          {% for label, desc in strategies %}
+          <tr>
+            <td>{{ label }}</td>
+            <td>{{ desc }}</td>
+            {% for p in range(players|length) %}
+              <td>
+                {% set strat_dict = history[p]|map(attribute=0)|list %}
+                {% if label in strat_dict %}
+                  {{ history[p][strat_dict.index(label)][1] }}
+                {% elif label == 'Total' %}
+                  {% set total = namespace(val=0) %}
+                  {% for strat, val in history[p] %}
+                    {% if strat in upper_labels %}
+                      {% set total.val = total.val + val %}
+                    {% endif %}
+                  {% endfor %}
+                  {{ total.val }}
+                {% elif label == 'Bonus if total score is 63 or more' %}
+                  {% set total = namespace(val=0) %}
+                  {% for strat, val in history[p] %}
+                    {% if strat in upper_labels %}
+                      {% set total.val = total.val + val %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if total.val >= 63 %}35{% else %}0{% endif %}
+                {% elif label == 'Total of Upper Section' %}
+                  {% set total = namespace(val=0) %}
+                  {% for strat, val in history[p] %}
+                    {% if strat in upper_labels %}
+                      {% set total.val = total.val + val %}
+                    {% endif %}
+                  {% endfor %}
+                  {% set bonus = 35 if total.val >= 63 else 0 %}
+                  {{ total.val + bonus }}
+                {% elif label == 'Total of Lower Section' %}
+                  {% set total = namespace(val=0) %}
+                  {% for strat, val in history[p] %}
+                    {% if strat in lower_labels %}
+                      {% set total.val = total.val + val %}
+                    {% endif %}
+                  {% endfor %}
+                  {{ total.val }}
+                {% elif label == 'GRAND TOTAL' %}
+                  {% set upper = namespace(val=0) %}
+                  {% set lower = namespace(val=0) %}
+                  {% for strat, val in history[p] %}
+                    {% if strat in upper_labels %}
+                      {% set upper.val = upper.val + val %}
+                    {% elif strat in lower_labels %}
+                      {% set lower.val = lower.val + val %}
+                    {% endif %}
+                  {% endfor %}
+                  {% set bonus = 35 if upper.val >= 63 else 0 %}
+                  {{ upper.val + lower.val + bonus }}
+                {% else %}-{% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

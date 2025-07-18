@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Yacht Dice Game</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f1e4;
+      font-family: 'Georgia', serif;
+      padding-top: 70px;
+      font-size: 30px;
+    }
+
+    .main-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 100px;
+      font-weight: bold;
+      margin-bottom: 70px;
+      color: #5b432d;
+    }
+
+    .rules {
+      max-width: 1000px;
+      margin-bottom: 60px;
+      text-align: center;
+      font-size: 30px;
+      color: #6b4c2f;
+    }
+
+    h2 {
+      font-size: 50px;
+      margin-bottom: 40px;
+      color: #6b4c2f;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .form-container {
+      background-color: #fff8e7;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 700px;
+    }
+
+    .form-control {
+      margin-bottom: 20px;
+      padding: 18px;
+      font-size: 27px;
+    }
+
+    .btn-primary {
+      font-size: 27px;
+      padding: 14px 0;
+      width: 100%;
+    }
+
+    ul {
+      text-align: left;
+      padding-left: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-wrapper">
+    <h1>🎲 Yacht Dice Game</h1>
+
+    <div class="rules">
+      <p><strong>Yacht Dice Game</strong> (also known as Yatzy, Generala, or Cheerio) is a turn-based dice game where players aim to score the highest total by rolling combinations of five dice.</p>
+
+      <p><strong>Basic Gameplay:</strong></p>
+      <ul>
+        <li><strong>Setup:</strong> Each player uses a scorecard with various scoring categories.</li>
+        <li><strong>Turns:</strong> Players take turns rolling dice up to three times per turn.</li>
+        <li><strong>Rolling:</strong> Keep desired dice and re-roll the rest.</li>
+        <li><strong>Scoring:</strong> After rolling, choose a category and record the score (can be zero).</li>
+        <li><strong>Winning:</strong> When all categories are filled, the player with the highest total wins.</li>
+      </ul>
+
+      <p><strong>Scoring Categories:</strong></p>
+      <ul>
+        <li><strong>Upper Section:</strong> Ones to Sixes — score the sum of matching dice.</li>
+        <li><strong>Lower Section:</strong> 3 of a Kind, 4 of a Kind, Full House, Small/Large Straight, Choice, Yacht.</li>
+        <li><strong>Bonus:</strong> 35 points if Upper Section scores reach 63+.</li>
+      </ul>
+
+      <p><strong>Example Scoring:</strong></p>
+      <ul>
+        <li><strong>Full House:</strong> 25 points for a pair + three of a kind.</li>
+        <li><strong>Small Straight:</strong> 30 points for 4-sequence (e.g., 1-2-3-4).</li>
+        <li><strong>Large Straight:</strong> 40 points for 5-sequence (e.g., 1-2-3-4-5).</li>
+        <li><strong>Yacht:</strong> 50 points if all five dice are the same.</li>
+        <li><strong>Choice:</strong> Sum of all dice.</li>
+      </ul>
+    </div>
+
+    <div class="form-container">
+      <h2>Player Setup</h2>
+      <form method="POST">
+        <input type="text" name="players" placeholder="Player 1" class="form-control" required>
+        <input type="text" name="players" placeholder="Player 2" class="form-control" required>
+        <input type="text" name="players" placeholder="Player 3 (optional)" class="form-control">
+        <input type="text" name="players" placeholder="Player 4 (optional)" class="form-control">
+        <button type="submit" class="btn btn-primary">Start Game</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
