@@ -70,11 +70,14 @@ A web-based implementation of the classic Yahtzee-style dice game, designed for 
 ## Screenshots
 
 ### Player Setup  
-![Player Setup](screenshots/setup.png)
+![Player Setup](images/1.png)
+![Player Setup](images/2.png)
+![Player Setup](images/3.png)
 
 ### In-Game View  
-![Gameplay](screenshots/gameplay.png)
+![Gameplay](images/4.png)
+![Gameplay](images/5.png)
 
 ### Game Over Screen  
-![Game Over](screenshots/gameover.png)
+![Game Over](images/6.png)
 
